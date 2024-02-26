@@ -1,0 +1,9 @@
+- hosts: othermasters
+  become: true
+  tasks:
+  - name: Print join master token
+    shell:
+  - name: Start nginx
+    systemd:
+      name: nginx
+      state: started

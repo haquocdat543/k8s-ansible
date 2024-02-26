@@ -1,0 +1,15 @@
+- hosts: workers
+  become: true
+  tasks:
+  - name: Print join worker token
+    yum:
+      name: 
+        - nginx
+        - nginx-mod-stream
+      state: present
+  - name: Start nginx
+    systemd:
+      name: nginx
+      state: started
+
+
