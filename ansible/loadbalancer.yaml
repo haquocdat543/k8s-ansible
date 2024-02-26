@@ -1,0 +1,14 @@
+- hosts: loadbalancer
+  become: true
+  tasks:
+  - name: Remove docker
+    yum:
+      name: 
+        - nginx
+        - nginx-mod-stream
+      state: present
+  - name: Start nginx
+    systemd:
+      name: nginx
+      state: started
+
