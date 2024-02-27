@@ -1,15 +1,21 @@
-- hosts: workers
+- hosts: firstmaster
   become: true
   tasks:
   - name: Print join worker token
-    yum:
-      name: 
-        - nginx
-        - nginx-mod-stream
-      state: present
-  - name: Start nginx
-    systemd:
-      name: nginx
-      state: started
+    shell: kubeadm token create --print-join-command
+    register: worker_token
+  - name: Log token
+    debug: 
+      msg: "{{ worker_token.stdout_lines }}"
+- hosts: workers
+  become: true
+  vars:
+    worker_token: "{{ hostvars['firstmaster']['worker_token']['stdout'] }}"
+  tasks:
+  - name: Join workers
+    command: "{{ manager_token }}"
+    register: output
 
-
+  - name: Log result
+    debug: 
+      msg: "{{ output.stdout_lines }}"

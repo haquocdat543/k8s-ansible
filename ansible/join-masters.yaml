@@ -1,9 +1,22 @@
-- hosts: othermasters
+- hosts: firstmaster
   become: true
   tasks:
   - name: Print join master token
-    shell:
-  - name: Start nginx
-    systemd:
-      name: nginx
-      state: started
+    shell: kubeadm token create --print-join-command
+    register: master_token
+  - name: Log token
+    debug: 
+      msg: "{{ master_token.stdout_lines }}"
+- hosts: masters
+  become: true
+  vars:
+    master_token: "{{ hostvars['firstmaster']['master_token']['stdout'] }}"
+  tasks:
+  - name: Join masters
+    command: "{{ master_token }}"
+    register: output
+
+  - name: Log result
+    debug: 
+      msg: "{{ output.stdout_lines }}"
+
