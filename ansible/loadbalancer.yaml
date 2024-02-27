@@ -1,32 +1,36 @@
-- hosts: loadbalancer
-  become: true
-  tasks:
-  - name: Remove docker
-    yum:
-      name: 
-        - nginx
-        - nginx-mod-stream
-      state: present
-  - name: Start nginx
-    systemd:
-      name: nginx
-      state: started
-
----
 - hosts: localhost
   tasks:
-    - name: Get public key (not private key) with cat
+    - name: Get nginx config from localhost
       shell: "cat ./nginx.conf"
       register: nginx_config
 
 - hosts: loadbalancer
+  become: true
   vars:
     nginx_config_content: "{{ hostvars['localhost']['nginx_config']['stdout'] }}"
   tasks:
-    - name: Write public key to authorized_keys
+    - name: Remove docker
+      yum:
+        name: 
+          - nginx
+          - nginx-mod-stream
+        state: present
+    - name: Start nginx
+      systemd:
+        name: nginx
+        state: started
+  
+    - name: Write down nginx config to loadbalancer
       lineinfile:
         path: /etc/nginx/nginx.conf
         line: "{{ nginx_config_content }}"
         create: yes
         mode: 0644  # Adjust permissions as needed
 
+  tasks:
+    - name: Restart nginx
+      shell: nginx -t
+    - name: Restart nginx with systemctl
+      systemd:
+        name: nginx
+        status: restarted
