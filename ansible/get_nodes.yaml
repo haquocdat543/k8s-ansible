@@ -1,4 +1,4 @@
-- hosts: firstmasters
+- hosts: firstmaster
   become: true
   tasks:
     - name: Get nodes

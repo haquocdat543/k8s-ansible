@@ -23,22 +23,22 @@
   become: true
   vars:
     master_token: "{{ hostvars['master1']['master_token']['stdout'] }}"
+    certificate: "{{ hostvars['master1']['certificate']['stdout_lines'] }}"
     control_plane_content: "{{ hostvars['localhost']['control_plane']['stdout'] }}"
   tasks:
   - name: Join masters
-    command: "{{ master_token }} --control-plane --certificate-key {{ certificate.stdout_lines | last }}"
+    command: "{{ master_token }} --control-plane --certificate-key {{ certificate | last }}"
     register: output
 
   - name: Log result
     debug: 
       msg: "{{ output.stdout_lines }}"
 
-  tasks:
-    - name: Write control_plane and calico
-      lineinfile:
-        path: $HOME/control_plane.sh
-        line: "{{ control_plane_content }}"
-        create: yes
-        mode: 0755
-    - name: Run control_plane and calico
-      command: sh $HOME/control_plane.sh
+  - name: Write control_plane and calico
+    lineinfile:
+      path: $HOME/control_plane.sh
+      line: "{{ control_plane_content }}"
+      create: yes
+      mode: 0755
+  - name: Run control_plane and calico
+    command: sh $HOME/control_plane.sh
