@@ -4,7 +4,7 @@
       shell: "cat ./control_plane.sh"
       register: control_plane
 
-- hosts: firstmaster
+- hosts: master1
   become: true
   tasks:
   - name: Get join master token
@@ -18,15 +18,15 @@
     register: certificate
   - name: Print certificate
     debug: 
-      msg: "{{ certificate.stdout_lines }}"
+      msg: "{{ certificate.stdout_lines | last }}"
 - hosts: othermasters
   become: true
   vars:
-    master_token: "{{ hostvars['firstmaster']['master_token']['stdout'] }}"
+    master_token: "{{ hostvars['master1']['master_token']['stdout'] }}"
     control_plane_content: "{{ hostvars['localhost']['control_plane']['stdout'] }}"
   tasks:
   - name: Join masters
-    command: "{{ master_token }} --control-plane --certificate-key {{ certificate }}"
+    command: "{{ master_token }} --control-plane --certificate-key {{ certificate.stdout_lines | last }}"
     register: output
 
   - name: Log result
