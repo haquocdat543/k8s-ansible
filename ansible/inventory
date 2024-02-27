@@ -2,12 +2,14 @@
 masters
 workers
 
+[loadbalancer]
+loadbalancer ansible_host= server_name=loadbalancer
+
 [firstmaster]
 master1-instance ansible_host= server_name=master1-instance
 
 [othermasters]
 master2-instance ansible_host= server_name=master2-instance
-master3-instance ansible_host= server_name=master3-instance
 
 [masters:children]
 firstmaster
