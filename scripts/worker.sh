@@ -1,8 +1,8 @@
 #!/bin/bash
 
-CONTAINERD="1.7.6"
-RUNC="1.1.9"
-CNI="1.3.0"
+CONTAINERD="1.7.13"
+RUNC="1.1.12"
+CNI="1.4.0"
 
 sudo swapoff -a
 
