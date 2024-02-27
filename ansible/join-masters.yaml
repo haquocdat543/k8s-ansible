@@ -28,5 +28,11 @@
       msg: "{{ output.stdout_lines }}"
 
   tasks:
+    - name: Write control_plane and calico
+      lineinfile:
+        path: $HOME/control_plane.sh
+        line: "{{ control_plane_content }}"
+        create: yes
+        mode: 0755
     - name: Run control_plane and calico
-      command: "{{ control_plane_content }}"
+      command: sh $HOME/control_plane.sh
