@@ -7,27 +7,31 @@ masters
 workers
 
 [loadbalancer]
-loadbalancer ansible_host= server_name=loadbalancer
+loadbalancer ansible_host=18.181.112.194 server_name=loadbalancer
 
 [firstmaster]
-master1-instance ansible_host= server_name=master1-instance
+master1 ansible_host=18.182.94.229 server_name=master1
 
 [othermasters]
-master2-instance ansible_host= server_name=master2-instance
+master2 ansible_host=54.250.210.254 server_name=master2
 
 [masters:children]
 firstmaster
 othermasters
 
 [workers]
-worker1-instance ansible_host= server_name=worker1-node
-worker2-instance ansible_host= server_name=worker2-node
+worker1 ansible_host=54.248.196.124 server_name=worker1
+worker2 ansible_host=54.250.115.121 server_name=worker2
+
+[loadbalancer:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=~/.ssh/Window2.pem
 
 [masters:vars]
-ansible_ssh_user=gcp
-ansible_ssh_private_key_file=~/.ssh/Window2
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=~/.ssh/Window2.pem
 
 [workers:vars]
-ansible_ssh_user=gcp
-ansible_ssh_private_key_file=~/.ssh/Window2
+ansible_ssh_user=ec2-user
+ansible_ssh_private_key_file=~/.ssh/Window2.pem
 

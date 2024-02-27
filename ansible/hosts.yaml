@@ -1,3 +1,13 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Write hosts from localhost
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item }} loadbalancer"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+      loop: "{{ groups['cluster'].ansible_host }}"
 - hosts: loadbalancer
   become: true
   tasks:
@@ -18,13 +28,3 @@
         create: yes
         mode: 0644  # Adjust permissions as needed
       loop: "{{ groups['master2'].ansible_host }}"
-- hosts: all
-  become: true
-  tasks:
-    - name: Write hosts from localhost
-      lineinfile:
-        path: /etc/hosts
-        line: "{{ item }} loadbalancer"
-        create: yes
-        mode: 0644  # Adjust permissions as needed
-      loop: "{{ groups['cluster'].ansible_host }}"
