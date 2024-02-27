@@ -1,18 +1,30 @@
-- hosts: localhost
-  tasks:
-    - name: Get hosts from localhost
-      shell: "cat ./hosts"
-      register: hosts
-
 - hosts: loadbalancer
-  vars:
-    hosts_content: "{{ hostvars['localhost']['hosts']['stdout'] }}"
+  become: true
+  tasks:
+    - name: Write master1 to loadbalancer
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item }} master1"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+      loop: "{{ groups['master1'].ansible_host }}"
+- hosts: loadbalancer
+  become: true
+  tasks:
+    - name: Write master2 to loadbalancer
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item }} master2"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+      loop: "{{ groups['master2'].ansible_host }}"
+- hosts: all
+  become: true
   tasks:
     - name: Write hosts from localhost
       lineinfile:
         path: /etc/hosts
-        line: "{{ hosts_content }}"
+        line: "{{ item }} loadbalancer"
         create: yes
         mode: 0644  # Adjust permissions as needed
-
-
+      loop: "{{ groups['cluster'].ansible_host }}"
