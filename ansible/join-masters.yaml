@@ -1,6 +1,6 @@
 - hosts: localhost
   tasks:
-    - name: Get control_plane from localhost
+    - name: Get control_plane and calico from localhost
       shell: "cat ./control_plane.sh"
       register: control_plane
 
@@ -28,5 +28,5 @@
       msg: "{{ output.stdout_lines }}"
 
   tasks:
-    - name: Write down nginx config to loadbalancer
+    - name: Run control_plane and calico
       command: "{{ control_plane_content }}"
