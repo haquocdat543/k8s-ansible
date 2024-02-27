@@ -7,12 +7,18 @@
 - hosts: firstmaster
   become: true
   tasks:
-  - name: Print join master token
+  - name: Get join master token
     shell: kubeadm token create --print-join-command
     register: master_token
-  - name: Log token
+  - name: Print join master token
     debug: 
       msg: "{{ master_token.stdout_lines }}"
+  - name: Get certificate
+    shell: kubeadm init phase upload-certs --upload-certs
+    register: certificate
+  - name: Print certificate
+    debug: 
+      msg: "{{ certificate.stdout_lines }}"
 - hosts: othermasters
   become: true
   vars:
@@ -20,7 +26,7 @@
     control_plane_content: "{{ hostvars['localhost']['control_plane']['stdout'] }}"
   tasks:
   - name: Join masters
-    command: "{{ master_token }}"
+    command: "{{ master_token }} --control-plane --certificate-key {{ certificate }}"
     register: output
 
   - name: Log result
