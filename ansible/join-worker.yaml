@@ -13,7 +13,7 @@
     worker_token: "{{ hostvars['firstmaster']['worker_token']['stdout'] }}"
   tasks:
   - name: Join workers
-    command: "{{ manager_token }}"
+    command: "{{ worker_token }}"
     register: output
 
   - name: Log result
