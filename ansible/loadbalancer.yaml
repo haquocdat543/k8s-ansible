@@ -33,4 +33,4 @@
     - name: Restart nginx with systemctl
       systemd:
         name: nginx
-        status: restarted
+        state: restarted
