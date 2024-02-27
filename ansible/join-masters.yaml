@@ -1,3 +1,9 @@
+- hosts: localhost
+  tasks:
+    - name: Get control_plane from localhost
+      shell: "cat ./control_plane.sh"
+      register: control_plane
+
 - hosts: firstmaster
   become: true
   tasks:
@@ -7,10 +13,11 @@
   - name: Log token
     debug: 
       msg: "{{ master_token.stdout_lines }}"
-- hosts: masters
+- hosts: othermasters
   become: true
   vars:
     master_token: "{{ hostvars['firstmaster']['master_token']['stdout'] }}"
+    control_plane_content: "{{ hostvars['localhost']['control_plane']['stdout'] }}"
   tasks:
   - name: Join masters
     command: "{{ master_token }}"
@@ -20,3 +27,6 @@
     debug: 
       msg: "{{ output.stdout_lines }}"
 
+  tasks:
+    - name: Write down nginx config to loadbalancer
+      command: "{{ control_plane_content }}"
