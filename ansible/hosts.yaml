@@ -1,0 +1,18 @@
+- hosts: localhost
+  tasks:
+    - name: Get hosts from localhost
+      shell: "cat ./hosts"
+      register: hosts
+
+- hosts: loadbalancer
+  vars:
+    hosts_content: "{{ hostvars['localhost']['hosts']['stdout'] }}"
+  tasks:
+    - name: Write hosts from localhost
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hosts_content }}"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+
+

@@ -1,3 +1,7 @@
+[all:children]
+cluster
+loadbalancer
+
 [cluster:children]
 masters
 workers
