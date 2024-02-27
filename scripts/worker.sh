@@ -70,3 +70,4 @@ sudo kubeadm config images pull --cri-socket unix:///run/containerd/containerd.s
 
 dnf install -y iproute-tc
 
+mkdir -p $HOME/.kubernetes
