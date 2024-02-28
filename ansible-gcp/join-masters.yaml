@@ -1,0 +1,44 @@
+- hosts: localhost
+  tasks:
+    - name: Get control_plane and calico from localhost
+      shell: "cat ./control_plane.sh"
+      register: control_plane
+
+- hosts: master1
+  become: true
+  tasks:
+  - name: Get join master token
+    shell: kubeadm token create --print-join-command
+    register: master_token
+  - name: Print join master token
+    debug: 
+      msg: "{{ master_token.stdout_lines }}"
+  - name: Get certificate
+    shell: kubeadm init phase upload-certs --upload-certs
+    register: certificate
+  - name: Print certificate
+    debug: 
+      msg: "{{ certificate.stdout_lines | last }}"
+- hosts: othermasters
+  become: true
+  vars:
+    master_token: "{{ hostvars['master1']['master_token']['stdout'] }}"
+    certificate: "{{ hostvars['master1']['certificate']['stdout_lines'] }}"
+    control_plane_content: "{{ hostvars['localhost']['control_plane']['stdout'] }}"
+  tasks:
+  - name: Join masters
+    command: "{{ master_token }} --control-plane --certificate-key {{ certificate | last }}"
+    register: output
+
+  - name: Log result
+    debug: 
+      msg: "{{ output.stdout_lines }}"
+
+  - name: Write control_plane and calico
+    lineinfile:
+      path: $HOME/control_plane.sh
+      line: "{{ control_plane_content }}"
+      create: yes
+      mode: 0755
+  - name: Run control_plane and calico
+    command: sh $HOME/control_plane.sh

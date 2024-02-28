@@ -1,0 +1,9 @@
+- hosts: firstmaster
+  become: true
+  tasks:
+    - name: Get nodes
+      shell: kubectl get nodes
+      register: nodes
+    - name: Log token
+      debug: 
+        msg: "{{ nodes.stdout_lines }}"

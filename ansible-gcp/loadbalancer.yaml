@@ -1,0 +1,35 @@
+- hosts: localhost
+  tasks:
+    - name: Get nginx config from localhost
+      shell: "cat ./nginx.conf"
+      register: nginx_config
+
+- hosts: loadbalancer
+  become: true
+  vars:
+    nginx_config_content: "{{ hostvars['localhost']['nginx_config']['stdout'] }}"
+  tasks:
+    - name: Remove docker
+      yum:
+        name: 
+          - nginx
+          - nginx-mod-stream
+        state: present
+    - name: Start nginx
+      systemd:
+        name: nginx
+        state: started
+  
+    - name: Write down nginx config to loadbalancer
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        line: "{{ nginx_config_content }}"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+
+    - name: Restart nginx
+      shell: nginx -s reload
+    - name: Restart nginx with systemctl
+      systemd:
+        name: nginx
+        state: restarted

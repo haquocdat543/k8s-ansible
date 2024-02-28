@@ -1,0 +1,36 @@
+[all:children]
+cluster
+loadbalancer
+
+[cluster:children]
+masters
+workers
+
+[loadbalancer]
+loadbalancer ansible_host=34.146.239.29 server_name=loadbalancer
+
+[firstmaster]
+master1 ansible_host=34.84.225.90 server_name=master1
+
+[othermasters]
+master2 ansible_host=34.146.217.172 server_name=master2
+
+[masters:children]
+firstmaster
+othermasters
+
+[workers]
+worker1 ansible_host=35.194.125.48 server_name=worker1
+
+[loadbalancer:vars]
+ansible_ssh_user=gcp
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[masters:vars]
+ansible_ssh_user=gcp
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[workers:vars]
+ansible_ssh_user=gcp
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+
