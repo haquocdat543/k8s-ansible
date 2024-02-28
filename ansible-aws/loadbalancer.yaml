@@ -9,7 +9,7 @@
   vars:
     nginx_config_content: "{{ hostvars['localhost']['nginx_config']['stdout'] }}"
   tasks:
-    - name: Remove docker
+    - name: Install nginx
       yum:
         name: 
           - nginx
