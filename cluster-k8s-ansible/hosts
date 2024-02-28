@@ -1,0 +1,22 @@
+node1 ansible_host=104.198.81.112  primary=true
+node2 ansible_host=34.84.94.130  secondary=true
+node3 ansible_host=34.146.134.109  secondary=true
+node4 ansible_host=34.146.57.110  secondary=true
+
+[worker]
+node3
+node4
+
+[master]
+node1
+node2
+
+[cluster:children]
+worker
+master
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
+ansible_ssh_extra_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_user=gcp
