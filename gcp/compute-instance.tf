@@ -9,6 +9,7 @@ resource "google_compute_instance" "loadbalancer" {
   boot_disk {
     initialize_params {
       image = "centos-cloud/centos-stream-9"
+      // image = "ubuntu-os-cloud/ubuntu-2204-lts"
       labels = {
         my_label = "value"
       }
@@ -50,6 +51,7 @@ resource "google_compute_instance" "master1" {
   boot_disk {
     initialize_params {
       image = "centos-cloud/centos-stream-9"
+      // image = "ubuntu-os-cloud/ubuntu-2204-lts"
       labels = {
         my_label = "value"
       }
@@ -91,6 +93,7 @@ resource "google_compute_instance" "master2" {
   boot_disk {
     initialize_params {
       image = "centos-cloud/centos-stream-9"
+      // image = "ubuntu-os-cloud/ubuntu-2204-lts"
       labels = {
         my_label = "value"
       }
@@ -132,6 +135,7 @@ resource "google_compute_instance" "worker1" {
   boot_disk {
     initialize_params {
       image = "centos-cloud/centos-stream-9"
+      // image = "ubuntu-os-cloud/ubuntu-2204-lts"
       labels = {
         my_label = "value"
       }
