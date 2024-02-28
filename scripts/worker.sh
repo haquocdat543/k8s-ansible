@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo yum update -y && sudo yum install -y wget git
+
 CONTAINERD="1.7.13"
 RUNC="1.1.12"
 CNI="1.4.0"

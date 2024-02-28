@@ -1,0 +1,19 @@
+- hosts: localhost
+  tasks:
+    - name: Get installation script
+      shell: "cat ../scripts/worker.sh"
+      register: install_script
+
+- hosts: cluster
+  become: true
+  vars:
+    install_script_content: "{{ hostvars['localhost']['install_script']['stdout'] }}"
+  tasks:
+    - name: Write down installation script
+      lineinfile:
+        path: $HOME/install_script.sh
+        line: "{{ install_script_content }}"
+        create: yes
+        mode: 0755
+    - name: Run install_script
+      command: sh $HOME/install_script.sh
