@@ -8,6 +8,11 @@
         create: yes
         mode: 0644  # Adjust permissions as needed
       loop: "{{ groups['loadbalancer'] | map('extract', hostvars, ['ansible_host']) }}"
+    - name: Install nginx
+      yum:
+        name: 
+          - epel-release
+        state: present
 - hosts: loadbalancer
   become: true
   tasks:
