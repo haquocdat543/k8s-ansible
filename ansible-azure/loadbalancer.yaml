@@ -10,10 +10,9 @@
     nginx_config_content: "{{ hostvars['localhost']['nginx_config']['stdout'] }}"
   tasks:
     - name: Install nginx
-      yum:
+      apt:
         name: 
           - nginx
-          - nginx-mod-stream
         state: present
     - name: Start nginx
       systemd:
@@ -27,9 +26,8 @@
         create: yes
         mode: 0644  # Adjust permissions as needed
 
-    - name: Restart nginx
-      shell: nginx -s reload
     - name: Restart nginx with systemctl
-      systemd:
+      service:
         name: nginx
         state: restarted
+        enabled: true

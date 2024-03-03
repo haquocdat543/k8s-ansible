@@ -1,7 +1,7 @@
 - hosts: localhost
   tasks:
     - name: Get installation script
-      shell: "cat ../scripts/worker.sh"
+      shell: "cat ./worker.sh"
       register: install_script
 
 - hosts: cluster
