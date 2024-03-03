@@ -1,0 +1,28 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Write hosts from localhost
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ item }} loadbalancer"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+      loop: "{{ groups['loadbalancer'] | map('extract', hostvars, ['ansible_host']) }}"
+- hosts: loadbalancer
+  become: true
+  tasks:
+    - name: Write master1 to loadbalancer
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['master1'].ansible_host }} master1"
+        create: yes
+        mode: 0644  # Adjust permissions as needed
+- hosts: loadbalancer
+  become: true
+  tasks:
+    - name: Write master2 to loadbalancer
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ hostvars['master2'].ansible_host }} master2"
+        create: yes
+        mode: 0644  # Adjust permissions as needed

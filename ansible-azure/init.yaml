@@ -1,0 +1,27 @@
+- hosts: localhost
+  tasks:
+    - name: Get control_plane and calico from localhost
+      shell: "cat ./control_plane.sh"
+      register: control_plane
+
+- hosts: firstmaster
+  become: true
+  vars:
+    control_plane_content: "{{ hostvars['localhost']['control_plane']['stdout'] }}"
+  tasks:
+    - name: Initilization cluster
+      shell: sudo kubeadm init --pod-network-cidr=172.24.0.0/16 --cri-socket unix:///run/containerd/containerd.sock --upload-certs --control-plane-endpoint=loadbalancer:6443
+      register: control_plane
+
+    - name: Initilization output
+      debug: 
+        msg: "{{ control_plane.stdout_lines }}"
+
+    - name: Write control_plane and calico
+      lineinfile:
+        path: $HOME/control_plane.sh
+        line: "{{ control_plane_content }}"
+        create: yes
+        mode: 0755
+    - name: Run control_plane and calico
+      command: sh $HOME/control_plane.sh

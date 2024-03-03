@@ -1,0 +1,9 @@
+- hosts: firstmaster
+  become: true
+  tasks:
+    - name: Get nodes
+      shell: kubectl version --client && kubeadm version
+      register: version
+    - name: Print version
+      debug: 
+        msg: "{{ version.stdout_lines }}"
