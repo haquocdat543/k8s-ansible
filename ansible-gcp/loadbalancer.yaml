@@ -27,9 +27,11 @@
         create: yes
         mode: 0644  # Adjust permissions as needed
 
+    - name: Reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
     - name: Restart nginx
-      shell: nginx -s reload
-    - name: Restart nginx with systemctl
       systemd:
         name: nginx
         state: restarted
