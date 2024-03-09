@@ -18,6 +18,7 @@
     - name: Start nginx
       systemd:
         name: nginx
+        enabled: yes
         state: started
   
     - name: Write down nginx config to loadbalancer
